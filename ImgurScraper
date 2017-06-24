@@ -1,3 +1,4 @@
+#Python Version 2.7.5
 #Filename:ImgurScraper
 #Author: Connor Rennie
 #Purpose: Downloads images from an imgur url and sends then to a specified directory
@@ -7,7 +8,7 @@ import requests, os, bs4
 ####The Below can be changed in normal use
 
 searchterm= 'cute cats'
-path = 'C:\Users\Connor\Desktop\Automate the boring Stuff with Python\Web scraping\imgur'
+path = 'C:\Users\Connor\Desktop\imgur'
 
 ####The below should not be changed in normal use
 

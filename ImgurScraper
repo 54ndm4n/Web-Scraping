@@ -1,0 +1,40 @@
+#Filename:ImgurScraper
+#Author: Connor Rennie
+#Purpose: Downloads images from an imgur url and sends then to a specified directory
+
+import requests, os, bs4
+
+####The Below can be changed in normal use
+
+searchterm= 'cute cats'
+path = 'C:\Users\Connor\Desktop\Automate the boring Stuff with Python\Web scraping\imgur'
+
+####The below should not be changed in normal use
+
+dir= os.path.join(path,searchterm)
+url='http://imgur.com/search?q=' + searchterm
+
+if not os.path.exists(dir):
+    os.makedirs(dir)
+print('Downloading page %s...' % url)
+res=requests.get(url)
+res.raise_for_status()
+soup= bs4.BeautifulSoup(res.text, "html.parser")
+pictureElem = soup.select('#imagelist img')
+
+for image in range(len(pictureElem)):
+
+        imageUrl = 'http:' + pictureElem[image].get('src')
+        print('downloading image %s...' % imageUrl)
+        res = requests.get(imageUrl)
+        res.raise_for_status
+
+        imageFile = open(os.path.join(dir, os.path.basename(imageUrl)), 'wb')
+        for chunk in res.iter_content(100000):
+            imageFile.write(chunk)
+        imageFile.close()
+
+print('Done')
+    
+
+      

@@ -1,0 +1,51 @@
+#Filename:MetOfficeScraper
+#Author: Connor Rennie
+#Purpose: Scrapes temperature data from MetOffice website
+import requests, os, bs4, operator
+
+
+def main():
+
+
+	Mainurl= 'http://www.metoffice.gov.uk/public/weather/regional-forecasts'
+
+	Mainres=requests.get(Mainurl)
+
+	Mainres.raise_for_status()
+
+	Mainsoup = bs4.BeautifulSoup(Mainres.text, "html.parser")
+
+	LinkData = Mainsoup.select('article ul li a[href]')
+
+	for link in LinkData:
+	
+		subURL = 'http://www.metoffice.gov.uk' + link['href']
+		GetTempData(subURL,link.contents[0])
+
+
+def GetTempData( url , name ):
+	
+	res=requests.get(url)
+
+	res.raise_for_status()
+	
+	soup= bs4.BeautifulSoup(res.text, "html.parser")
+
+	tempData = soup.select('td[data-type="temp"]')
+
+	areaData = soup.select('table[class] td a[href]')
+
+	
+	
+	AreaTempDict={}
+
+	for i in range(len(areaData)):
+		AreaTempDict[str(areaData[i].contents)[3:][:-2]]= str(tempData[i]['data-value-raw'])
+	
+	maxTemp= max(AreaTempDict.iteritems(), key=operator.itemgetter(1))[0]
+	
+	print 'The hottest place in ' + name + ' is ' + maxTemp + ' at ' + AreaTempDict.get(maxTemp) + ' degrees celsius' + '\n'
+	
+	
+if __name__ == '__main__':
+    main()

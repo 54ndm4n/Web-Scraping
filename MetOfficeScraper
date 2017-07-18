@@ -1,6 +1,10 @@
 #Filename:MetOfficeScraper
 #Author: Connor Rennie
 #Purpose: Scrapes temperature data from MetOffice website
+#Version: 1.1
+#Changes: 1.0-Created
+#		  1.1-Moved MaxtTemp calculation to seperate function
+
 import requests, os, bs4, operator
 
 
@@ -23,6 +27,8 @@ def main():
 		GetTempData(subURL,link.contents[0])
 
 
+## Get the temperature data for a url
+		
 def GetTempData( url , name ):
 	
 	res=requests.get(url)
@@ -42,8 +48,24 @@ def GetTempData( url , name ):
 	for i in range(len(areaData)):
 		AreaTempDict[str(areaData[i].contents)[3:][:-2]]= str(tempData[i]['data-value-raw'])
 	
+	
+##print the list of places and temperatures, for testing purposes.	
+
+	for j in AreaTempDict:
+		
+		print j + ' ' + AreaTempDict[j]
+	
+	FindMaxTemp(AreaTempDict, name)
+
+
+
+##find the max temperature in a dictionary of place names a
+ 	
+def FindMaxTemp(AreaTempDict, name):
+		
 	maxTemp= max(AreaTempDict.iteritems(), key=operator.itemgetter(1))[0]
 	
+		
 	print 'The hottest place in ' + name + ' is ' + maxTemp + ' at ' + AreaTempDict.get(maxTemp) + ' degrees celsius' + '\n'
 	
 	
